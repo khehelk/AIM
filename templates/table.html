@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Labs - table</title>
+</head>
+<body>
+    <form class="table-params" action="/table">
+        <div class="menu__rows">
+            Строки (max={{max_rows}}): с
+            <input name="row_from" class="row_from" value="1">
+            до
+            <input name="row_to" class="row_to" value="1">
+        </div>
+        <div class="menu__rows">
+            Столбцы (max={{max_columns}}): с
+            <input name="column_from" class="column_from" value="1">
+            до
+            <input name="column_to" class="column_to" value="1">
+        </div>
+        <button type="submit">Получить таблицу</button>
+    </form>
+    Кол-во пустых ячеек: {{empty_cells}}
+    <br>
+    Кол-во заполненных ячеек: {{filled_cells}}
+    <table>
+        <thead>
+            <tr>
+                <th>Название столбца</th>
+                <th>Тип данных</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for index, row in info_df.iterrows() %}
+            <tr>
+                <td>{{ row['Название столбца'] }}</td>
+                <td>{{ row['Тип данных'] }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+
+    </table>
+    <div align="center">
+        <table>
+            <h1>
+                {% for table in tables %}
+                <h2>{{titles[loop.index]}}</h2>
+                {{ table|safe }}
+                {% endfor %}
+            </h1>
+        </table>
+    </div>
+</body>
+</html>
