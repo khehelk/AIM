@@ -39,10 +39,23 @@ def table():
     column_from = 1 if request.args.get("column_from") is None else int(request.args.get("column_from")) - 1
     column_to = 1 if request.args.get("column_to") is None else int(request.args.get("column_to"))
 
-    result = data.iloc[row_from:row_to, column_from:column_to]
+    result_table = data.iloc[row_from:row_to, column_from:column_to]
+    result_table['Birth year'] = pd.to_numeric(result_table['Birth year'], errors='coerce')
+    result_table['Century'] = result_table['Birth year'].apply(lambda x: (x // 100) + 1 if not pd.isnull(x) else x)
+
+    first_ad = simple_ad(result_table, 'Gender', 'Age of death')
+    second_ad = simple_ad(result_table, 'Occupation', 'Age of death')
+    third_ad = simple_ad(result_table, 'Occupation', 'Birth year')
+    fourth_ad = result_table.groupby('Century')['Occupation'].count().agg(['min', 'max', 'mean']).reset_index()
+
+
 
     return render_template('table.html',
-                           tables=[result.to_html()],
+                           first_ad=first_ad.to_html(),
+                           second_ad=second_ad.to_html(),
+                           third_ad=third_ad.to_html(),
+                           fourth_ad=fourth_ad.to_html(),
+                           tables=[result_table.to_html()],
                            titles=[''],
                            max_rows=max_rows,
                            info_df=info_df,
@@ -50,6 +63,9 @@ def table():
                            empty_cells=empty_cells,
                            filled_cells=filled_cells)
 
+
+def simple_ad(table, column_section, column_main):
+    return table.groupby(column_section)[column_main].agg(['min', 'max', 'mean']).reset_index()
 
 if __name__ == "__main__":
     app.run(host="localhost", port=int("5000"))

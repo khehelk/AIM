@@ -44,6 +44,30 @@
 
     </table>
     <div align="center">
+        <h2>Минимальная, максимальная, средняя длительность жизни в разрезе гендера</h2>
+        <table>
+            {{ first_ad|safe }}
+        </table>
+    </div>
+    <div align="center">
+        <h2>Минимальная, максимальная, средняя длительность жизни в разрезе вида деятельности</h2>
+        <table>
+            {{ second_ad|safe }}
+        </table>
+    </div>
+    <div align="center">
+        <h2>Минимальный, максимальный, средний год рождения в разрезе вида деятельности</h2>
+        <table>
+            {{ third_ad|safe }}
+        </table>
+    </div>
+    <div align="center">
+        <h2>Минимальное, максимальное, среднее количество деятелей в разрезе веков</h2>
+        <table>
+            {{ fourth_ad|safe }}
+        </table>
+    </div>
+    <div align="center">
         <table>
             <h1>
                 {% for table in tables %}
