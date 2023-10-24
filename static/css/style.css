@@ -1,0 +1,16 @@
+.infoTable{
+    display:none;
+}
+
+.minmaxavgTables{
+    display:none;
+}
+
+.main-table-container{
+    display:none;
+}
+
+.table-container{
+    max-height: 300px;
+    overflow-y: scroll;
+}

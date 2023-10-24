@@ -1,81 +1,187 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Labs - table</title>
+    <title>Labs - Table</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
-    <form class="table-params" action="/table">
-        <div class="menu__rows">
-            Строки (max={{max_rows}}): с
-            <input name="row_from" class="row_from" value="1">
-            до
-            <input name="row_to" class="row_to" value="1">
+    <div class="container-xl p-2">
+        <button id="toggleInfoButton" class="btn btn-primary mb-2">Показать/Скрыть информацию о столбцах</button>
+        <div id="infoTable" class="infoTable">
+            <table class="table table-bordered">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>Название столбца</th>
+                        <th>Тип данных</th>
+                        <th>Пустые ячейки</th>
+                        <th>Заполненные ячейки</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for index, row in info_df.iterrows() %}
+                        <tr>
+                            <td>{{ row["Name"] }}</td>
+                            <td>{{ row["Type"] }}</td>
+                            <td>{{ row["EmptyCells"] }}</td>
+                            <td>{{ row["FilledCells"] }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
-        <div class="menu__rows">
-            Столбцы (max={{max_columns}}): с
-            <input name="column_from" class="column_from" value="1">
-            до
-            <input name="column_to" class="column_to" value="1">
-        </div>
-        <button type="submit">Получить таблицу</button>
-    </form>
-    Кол-во пустых ячеек: {{empty_cells}}
-    <br>
-    Кол-во заполненных ячеек: {{filled_cells}}
-    <table>
-        <thead>
-            <tr>
-                <th>Название столбца</th>
-                <th>Тип данных</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for index, row in info_df.iterrows() %}
-            <tr>
-                <td>{{ row['Название столбца'] }}</td>
-                <td>{{ row['Тип данных'] }}</td>
-            </tr>
-        {% endfor %}
-        </tbody>
+        <form class="mt-2">
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    <label for="row_from">Строки (max={{max_rows}}): с</label>
+                    <input type="number" class="form-control" id="row_from" name="row_from" value="{{ search_values[0][1] }}">
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="row_to">до</label>
+                    <input type="number" class="form-control" id="row_to" name="row_to" value="{{ search_values[2][1] }}">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    <label for="column_from">Столбцы (max={{max_columns}}): с</label>
+                    <input type="number" class="form-control" id="column_from" name="column_from" value="{{ search_values[1][1] }}">
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="column_to">до</label>
+                    <input type="number" class="form-control" id="column_to" name="column_to" value="{{ search_values[3][1] }}">
+                </div>
+            </div>
+            <div>
+                <button type="submit" class="btn btn-primary">Получить таблицу</button>
+                <button type="button" id="toggleMainButton" class="btn btn-primary">Показать/Скрыть основную таблицу</button>
+                <button type="button" id="toggleAdLab2" class="btn btn-primary">Показать/Скрыть min, max, avg таблицы</button>
+            </div>
+        </form>
 
-    </table>
-    <div align="center">
-        <h2>Минимальная, максимальная, средняя длительность жизни в разрезе гендера</h2>
-        <table>
-            {{ first_ad|safe }}
-        </table>
+        <div id="adLab2" class="minmaxavgTables">
+            <div class="text-center mt-2">
+                <h2>Минимальная, максимальная, средняя длительность жизни в разрезе гендера</h2>
+                <div class="table-container">
+                    <table class="table table-bordered">
+                        <thead class="thead-dark">
+                            <tr>
+                                {% for header in first_ad.columns %}
+                                    <th>{{ header }}</th>
+                               {% endfor %}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for index, row in first_ad.iterrows() %}
+                                <tr>
+                                    {% for value in row %}
+                                        <td>{{ value }}</td>
+                                    {% endfor %}
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="text-center mt-2">
+                <h2>Минимальная, максимальная, средняя длительность жизни в разрезе вида деятельности</h2>
+                <div class="table-container">
+                    <table class="table table-bordered">
+                        <thead class="thead-dark">
+                            <tr>
+                                {% for header in second_ad.columns %}
+                                    <th>{{ header }}</th>
+                                {% endfor %}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for index, row in second_ad.iterrows() %}
+                                <tr>
+                                    {% for value in row %}
+                                        <td>{{ value }}</td>
+                                    {% endfor %}
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="text-center mt-2">
+                <h2>Минимальный, максимальный, средний год рождения в разрезе вида деятельности</h2>
+                <div class="table-container">
+                    <table class="table table-bordered">
+                        <thead class="thead-dark">
+                            <tr>
+                                {% for header in third_ad.columns %}
+                                    <th>{{ header }}</th>
+                               {% endfor %}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for index, row in third_ad.iterrows() %}
+                                <tr>
+                                    {% for value in row %}
+                                        <td>{{ value }}</td>
+                                    {% endfor %}
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="text-center mt-2">
+                <h2>Минимальное, максимальное, среднее количество деятелей в разрезе веков</h2>
+                <div class="table-container">
+                    <table class="table table-bordered">
+                        <thead class="thead-dark">
+                            <tr>
+                                {% for header in fourth_ad.columns %}
+                                    <th>{{ header }}</th>
+                               {% endfor %}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for index, row in fourth_ad.iterrows() %}
+                                <tr>
+                                    {% for value in row %}
+                                        <td>{{ value }}</td>
+                                    {% endfor %}
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+
+        <div id="mainTable" class="main-table-container table-container text-center mt-4">
+            <table class="table table-bordered main-table">
+                <thead class="thead-dark">
+                   <tr>
+                       {% for header in result_table.columns %}
+                            <th>{{ header }}</th>
+                       {% endfor %}
+                   </tr>
+                </thead>
+                <tbody>
+                    {% for index, row in result_table.iterrows() %}
+                        <tr>
+                            {% for value in row %}
+                                <td>{{ value }}</td>
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
-    <div align="center">
-        <h2>Минимальная, максимальная, средняя длительность жизни в разрезе вида деятельности</h2>
-        <table>
-            {{ second_ad|safe }}
-        </table>
-    </div>
-    <div align="center">
-        <h2>Минимальный, максимальный, средний год рождения в разрезе вида деятельности</h2>
-        <table>
-            {{ third_ad|safe }}
-        </table>
-    </div>
-    <div align="center">
-        <h2>Минимальное, максимальное, среднее количество деятелей в разрезе веков</h2>
-        <table>
-            {{ fourth_ad|safe }}
-        </table>
-    </div>
-    <div align="center">
-        <table>
-            <h1>
-                {% for table in tables %}
-                <h2>{{titles[loop.index]}}</h2>
-                {{ table|safe }}
-                {% endfor %}
-            </h1>
-        </table>
-    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="{{ url_for('static', filename='js/index.js') }}"></script>
 </body>
 </html>
