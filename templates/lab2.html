@@ -4,35 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Labs - Table</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <title>Lab2</title>
 </head>
 <body>
+    <header class="mt-2 container d-flex justify-content-center align-items-center">
+        <a class="btn btn-primary mr-2" href="/lab1">Лаб№1</a>
+        <a class="btn btn-success mr-2" href="/lab2">Лаб№2</a>
+        <a class="btn btn-primary" href="/lab3">Лаб№3</a>
+    </header>
     <div class="container-xl p-2">
-        <button id="toggleInfoButton" class="btn btn-primary mb-2">Показать/Скрыть информацию о столбцах</button>
-        <div id="infoTable" class="infoTable">
-            <table class="table table-bordered">
-                <thead class="thead-dark">
-                    <tr>
-                        <th>Название столбца</th>
-                        <th>Тип данных</th>
-                        <th>Пустые ячейки</th>
-                        <th>Заполненные ячейки</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for index, row in info_df.iterrows() %}
-                        <tr>
-                            <td>{{ row["Name"] }}</td>
-                            <td>{{ row["Type"] }}</td>
-                            <td>{{ row["EmptyCells"] }}</td>
-                            <td>{{ row["FilledCells"] }}</td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
         <form class="mt-2">
             <div class="form-row">
                 <div class="form-group col-md-4">
@@ -41,26 +23,14 @@
                 </div>
                 <div class="form-group col-md-4">
                     <label for="row_to">до</label>
-                    <input type="number" class="form-control" id="row_to" name="row_to" value="{{ search_values[2][1] }}">
-                </div>
-            </div>
-            <div class="form-row">
-                <div class="form-group col-md-4">
-                    <label for="column_from">Столбцы (max={{max_columns}}): с</label>
-                    <input type="number" class="form-control" id="column_from" name="column_from" value="{{ search_values[1][1] }}">
-                </div>
-                <div class="form-group col-md-4">
-                    <label for="column_to">до</label>
-                    <input type="number" class="form-control" id="column_to" name="column_to" value="{{ search_values[3][1] }}">
+                    <input type="number" class="form-control" id="row_to" name="row_to" value="{{ search_values[1][1] }}">
                 </div>
             </div>
             <div>
-                <button type="submit" class="btn btn-primary">Получить таблицу</button>
-                <button type="button" id="toggleMainButton" class="btn btn-primary">Показать/Скрыть основную таблицу</button>
+                <button type="submit" class="btn btn-primary">Получить таблицы</button>
                 <button type="button" id="toggleAdLab2" class="btn btn-primary">Показать/Скрыть min, max, avg таблицы</button>
             </div>
         </form>
-
         <div id="adLab2" class="minmaxavgTables">
             <div class="text-center mt-2">
                 <h2>Минимальная, максимальная, средняя длительность жизни в разрезе гендера</h2>
@@ -154,28 +124,6 @@
                     </table>
                 </div>
             </div>
-        </div>
-
-
-        <div id="mainTable" class="main-table-container table-container text-center mt-4">
-            <table class="table table-bordered main-table">
-                <thead class="thead-dark">
-                   <tr>
-                       {% for header in result_table.columns %}
-                            <th>{{ header }}</th>
-                       {% endfor %}
-                   </tr>
-                </thead>
-                <tbody>
-                    {% for index, row in result_table.iterrows() %}
-                        <tr>
-                            {% for value in row %}
-                                <td>{{ value }}</td>
-                            {% endfor %}
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
         </div>
     </div>
 

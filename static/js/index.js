@@ -9,4 +9,7 @@ $(document).ready(function () {
     $("#toggleAdLab2").click(function () {
         $("#adLab2").toggle();
     });
+    $("#toggleLab3").click(function () {
+        $("#lab3").toggle();
+    });
 });

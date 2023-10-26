@@ -1,3 +1,10 @@
+/*index*/
+.index-header{
+    height: 100vh;
+}
+
+
+/*lab1*/
 .infoTable{
     display:none;
 }
@@ -11,6 +18,16 @@
 }
 
 .table-container{
-    max-height: 300px;
+    max-height: 500px;
     overflow-y: scroll;
+}
+
+
+/*lab3*/
+.image_container{
+}
+
+.chart{
+    width: 600px;
+    height: 400px;
 }
