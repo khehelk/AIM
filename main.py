@@ -1,5 +1,8 @@
 import base64
 
+import BloomFilter as bf
+import SiteKeywords as sk
+import Links
 import matplotlib.pyplot as plt
 from io import BytesIO
 from flask import Flask, render_template, request, Response
@@ -11,7 +14,8 @@ max_rows = max(data.axes[0])
 max_columns = len(data.axes[1])
 before_table_lab3 = data
 before_table_lab3['Birth year'] = pd.to_numeric(before_table_lab3['Birth year'], errors='coerce')
-before_table_lab3['Century'] = before_table_lab3['Birth year'].apply(lambda x: (x // 100) + 1 if not pd.isnull(x) else x)
+before_table_lab3['Century'] = before_table_lab3['Birth year'].apply(
+    lambda x: (x // 100) + 1 if not pd.isnull(x) else x)
 after_table_lab3 = data
 
 
@@ -167,6 +171,27 @@ def lab3():
     return render_template("lab3.html",
                            plot_before_url=plotbeforeurl,
                            plot_after_url=plotafterurl)
+
+
+@app.route("/lab4")
+def lab4():
+    site_keywords = sk.SiteKeywords()
+    num_of_links = len(Links.links)
+    bloom_filter = bf.Bloomfilter(num_of_links, num_of_links)
+    keyword = request.args.get("search_keyword")
+    sites = list()
+
+    for i in Links.links:
+        for j in i[1]:
+            bloom_filter.add_to_filter(j.lower())
+        site_keywords.add_keywords_for_site(i[0], [string.lower() for string in i[1]])
+
+    if keyword is not None:
+        if bloom_filter.check_is_in_filter(keyword.lower()):
+            sites.extend(site_keywords.get_sites_for_keyword(keyword.lower()))
+
+    return render_template("lab4.html",
+                           sites=sites)
 
 
 if __name__ == "__main__":
