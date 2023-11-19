@@ -177,7 +177,7 @@ def lab3():
 def lab4():
     site_keywords = sk.SiteKeywords()
     num_of_links = len(Links.links)
-    bloom_filter = bf.Bloomfilter(num_of_links, num_of_links)
+    bloom_filter = bf.Bloomfilter(num_of_links*10, num_of_links)
     keyword = request.args.get("search_keyword")
     sites = list()
 
