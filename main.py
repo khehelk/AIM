@@ -1,5 +1,7 @@
 import base64
 
+import numpy as np
+
 import BloomFilter as bf
 import SiteKeywords as sk
 import Links
@@ -177,7 +179,7 @@ def lab3():
 def lab4():
     site_keywords = sk.SiteKeywords()
     num_of_links = len(Links.links)
-    bloom_filter = bf.Bloomfilter(num_of_links*10, num_of_links)
+    bloom_filter = bf.Bloomfilter(num_of_links * 10, num_of_links)
     keyword = request.args.get("search_keyword")
     sites = list()
 
@@ -192,6 +194,75 @@ def lab4():
 
     return render_template("lab4.html",
                            sites=sites)
+
+
+@app.route("/lab5")
+def lab5():
+    before_table_lab3["Age of death"].fillna(data["Age of death"].mean(), inplace=True)
+    data_for_regression = before_table_lab3.groupby(["Century"])["Age of death"].agg('mean').reset_index()
+    all_ages = list(map(int, data_for_regression["Age of death"]))
+    all_centuries = list(map(int, data_for_regression["Century"]))
+
+    max_age, min_age = max(all_ages), min(all_ages)
+    #all_ages = [(i - min_age) / (max_age - min_age) for i in all_ages]
+
+    age = all_ages[:len(all_ages) - int(len(all_ages) * 0.1)]
+    century = all_centuries[:len(all_centuries) - int(len(all_centuries) * 0.1)]
+
+    check_age = all_ages[len(all_ages) - int(len(all_ages) * 0.1):]
+    check_century = all_centuries[len(all_centuries) - int(len(all_centuries) * 0.1):]
+
+    plt.title('99% data')
+    plt.plot(century, age, 'ro')
+    b0, b1 = calc_coeff(century, age)
+    plt.plot(century, do_predict(b0, b1, century))
+    plt.text(min(century), max(age), f'y={b1:.4f}*x + {b0:.4f}', fontsize=20,
+             bbox={'facecolor': 'yellow', 'alpha': 0.2})
+    plt.tight_layout()
+    plt.grid(True)
+    img99 = BytesIO()
+    plt.savefig(img99, format="png")
+    img99.seek(0)
+    plt.close()
+
+    plt.title('1% data')
+    plt.plot(check_century, check_age, 'ro')
+    b0, b1 = calc_coeff(check_century, check_age)
+    plt.plot(check_century, do_predict(b0, b1, check_century))
+    plt.text(min(check_century), max(check_age), f'y={b1:.4f}*x + {b0:.4f}', fontsize=20,
+             bbox={'facecolor': 'yellow', 'alpha': 0.2})
+    plt.grid(True)
+    img1 = BytesIO()
+    plt.savefig(img1, format="png")
+    img1.seek(0)
+    plt.close()
+
+    age_mean = sum(age) / len(age)
+    ss_total = sum((i-age_mean)**2 for i in age)
+    ss_residual = sum((i - age_predi)**2 for i, age_predi in zip(age, do_predict(b0, b1, check_century)))
+    r = 1-(ss_residual/ss_total)
+
+    return render_template("lab5.html",
+                           r=r,
+                           img1=base64.b64encode(img1.read()).decode(),
+                           img99=base64.b64encode(img99.read()).decode())
+
+
+def calc_coeff(x, y):
+    a = len(y)
+    b = sum(x)
+    c = sum(y)
+    d = sum([i * i for i in x])
+    e = sum([x[i] * y[i] for i in range(len(y))])
+
+    b1 = (a * e - c * b) / (a * d - b * b)
+    b0 = (c - b1 * b) / a
+    return b0, b1
+
+
+def do_predict(b0, b1, x):
+    y = [b1 * i + b0 for i in x]
+    return y
 
 
 if __name__ == "__main__":
