@@ -9,6 +9,7 @@ import matplotlib.pyplot as plt
 from io import BytesIO
 from flask import Flask, render_template, request, Response
 import pandas as pd
+from TreeDecision import TreeDecision
 
 app = Flask(__name__)
 data = pd.read_csv("../AgeDataset-V1.csv")
@@ -214,7 +215,7 @@ def lab5():
     all_centuries = list(map(int, data_for_regression["Century"]))
 
     max_age, min_age = max(all_ages), min(all_ages)
-    #all_ages = [(i - min_age) / (max_age - min_age) for i in all_ages]
+    # all_ages = [(i - min_age) / (max_age - min_age) for i in all_ages]
 
     age = all_ages[:len(all_ages) - int(len(all_ages) * 0.1)]
     century = all_centuries[:len(all_centuries) - int(len(all_centuries) * 0.1)]
@@ -248,14 +249,31 @@ def lab5():
     plt.close()
 
     age_mean = sum(age) / len(age)
-    ss_total = sum((i-age_mean)**2 for i in age)
-    ss_residual = sum((i - age_predi)**2 for i, age_predi in zip(age, do_predict(b0, b1, check_century)))
-    r = 1-(ss_residual/ss_total)
+    ss_total = sum((i - age_mean) ** 2 for i in age)
+    ss_residual = sum((i - age_predi) ** 2 for i, age_predi in zip(age, do_predict(b0, b1, check_century)))
+    r = 1 - (ss_residual / ss_total)
 
     return render_template("lab5.html",
                            r=r,
                            img1=base64.b64encode(img1.read()).decode(),
                            img99=base64.b64encode(img99.read()).decode())
+
+
+@app.route("/lab6")
+def lab6():
+    d = TreeDecision.d
+    tree = TreeDecision.tree
+    result = list()
+    for i in TreeDecision.result.to_numpy():
+        result_data = (i[0], i[1],
+                       tree.search(i[0], i[1]),
+                       d['Age of death'][d['Gender'] == i[0]][d['Occupation'] == i[1]].to_numpy()[0],
+                       i[3],
+                       i[4])
+        result.append(result_data)
+    print(result)
+    return render_template("lab6.html",
+                           result=result)
 
 
 def calc_coeff(x, y):
