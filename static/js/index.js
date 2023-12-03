@@ -12,4 +12,14 @@ $(document).ready(function () {
     $("#toggleLab3").click(function () {
         $("#lab3").toggle();
     });
+    $('#search_keyword').on('input', function(){
+        keyword = new URLSearchParams(window.location.search).get("search_keyword")
+        console.log(keyword)
+        $('<input />').attr('type', 'hidden')
+            .attr('name', "keyword")
+            .attr('value', keyword)
+            .appendTo('#commentForm');
+    });
+
+    return true;
 });

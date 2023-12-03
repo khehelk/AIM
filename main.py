@@ -188,12 +188,22 @@ def lab4():
             bloom_filter.add_to_filter(j.lower())
         site_keywords.add_keywords_for_site(i[0], [string.lower() for string in i[1]])
 
+    result_search = False
+
     if keyword is not None:
-        if bloom_filter.check_is_in_filter(keyword.lower()):
+        result_search = not bloom_filter.check_is_not_in_filter(keyword.lower())
+        if result_search:
             sites.extend(site_keywords.get_sites_for_keyword(keyword.lower()))
 
+    if request.args.get("get_results") is not None:
+        if request.args.get("get_results") == "true":
+            return render_template("lab4.html",
+                                   keyword=keyword,
+                                   sites=sites)
+
     return render_template("lab4.html",
-                           sites=sites)
+                           keyword=keyword,
+                           result_search=result_search)
 
 
 @app.route("/lab5")

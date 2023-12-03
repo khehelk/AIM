@@ -26,8 +26,8 @@ class Bloomfilter(object):
         for i in range(self.number_hash_functions):
             self.bloom_filter[self._hash(item, i)] = 1
 
-    def check_is_in_filter(self, item):
+    def check_is_not_in_filter(self, item):
         for i in range(self.number_hash_functions):
-            if self.bloom_filter[self._hash(item, i)] == 1:
+            if self.bloom_filter[self._hash(item, i)] == 0:
                 return True
         return False
