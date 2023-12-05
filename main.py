@@ -3,12 +3,15 @@ import base64
 import numpy as np
 
 import BloomFilter as bf
+import Clusterization
 import SiteKeywords as sk
 import Links
 import matplotlib.pyplot as plt
 from io import BytesIO
 from flask import Flask, render_template, request, Response
 import pandas as pd
+
+from CSV import MyCSV
 from TreeDecision import TreeDecision
 
 app = Flask(__name__)
@@ -274,6 +277,18 @@ def lab6():
     print(result)
     return render_template("lab6.html",
                            result=result)
+
+
+@app.route("/lab7")
+def lab7():
+    my_csv = MyCSV()
+    my_csv.data = my_csv.data.sample(frac=0.05, random_state=0)
+    my_csv.data['Century'] = my_csv.data['Birth year'].apply(lambda x: (x // 100) + 1 if not pd.isnull(x) else x)
+    lab7_data = my_csv.data[['Age of death', 'Century']]
+    lab7_data = lab7_data.to_numpy()
+    arr = [[i[1], i[0]] for i in lab7_data]
+    png = Clasterization.visualisation_2d(Clasterization.clusterization(arr, 5))
+    return render_template("lab7.html", png=png)
 
 
 def calc_coeff(x, y):

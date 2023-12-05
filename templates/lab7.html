@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <title>Lab5</title>
+    <title>Lab7</title>
 </head>
 <body>
     <header class="mt-2 container d-flex justify-content-center align-items-center">
@@ -14,16 +14,12 @@
         <a class="btn btn-primary mr-2" href="/lab2">Лаб№2</a>
         <a class="btn btn-primary mr-2" href="/lab3">Лаб№3</a>
         <a class="btn btn-primary mr-2" href="/lab4">Лаб№4</a>
-        <a class="btn btn-success mr-2" href="/lab5">Лаб№5</a>
+        <a class="btn btn-primary mr-2" href="/lab5">Лаб№5</a>
         <a class="btn btn-primary mr-2" href="/lab6">Лаб№6</a>
-        <a class="btn btn-primary" href="/lab7">Лаб№7</a>
+        <a class="btn btn-success" href="/lab7">Лаб№7</a>
     </header>
-    <h1>Коэффициент детерминации R: {{ r }}</h1>
     <img id="image-99"
-                     src="data:image/png;base64, {{ img99 }}"
-                     class="chart" alt="">
-    <img id="image-1"
-                     src="data:image/png;base64, {{ img1 }}"
-                     class="chart" alt="">
+         src="data:image/png;base64, {{ png }}"
+         class="chart" alt="">
 </body>
 </html>
