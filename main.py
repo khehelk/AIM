@@ -287,7 +287,7 @@ def lab7():
     lab7_data = my_csv.data[['Age of death', 'Century']]
     lab7_data = lab7_data.to_numpy()
     arr = [[i[1], i[0]] for i in lab7_data]
-    png = Clasterization.visualisation_2d(Clasterization.clusterization(arr, 5))
+    png = Clusterization.visualisation_2d(Clusterization.clusterization(arr, 5))
     return render_template("lab7.html", png=png)
 
 
